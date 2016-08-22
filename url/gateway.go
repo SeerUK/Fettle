@@ -15,17 +15,18 @@ type Gateway interface {
 // MockGateway provides an implementation of the Gateway interface that allows pre-settings values,
 // for use in tests.
 type MockGateway struct {
-	mockURL *URL
+	mockURL   *URL
+	mockError error
 }
 
 // FindByReference retrieves a pre-set mock URL instance.
 func (g MockGateway) FindByReference(reference string) (*URL, error) {
-	return g.mockURL
+	return g.mockURL, g.mockError
 }
 
 // FindLatest retrieves a pre-set mock URL instance.
 func (g MockGateway) FindLatest() (*URL, error) {
-	return g.mockURL
+	return g.mockURL, g.mockError
 }
 
 // -- MySQL URL Gateway
@@ -40,7 +41,11 @@ func (g MysqlGateway) FindByReference(reference string) (*URL, error) {
 	g.RLock()
 	defer g.RUnlock()
 
-	return &URL{}
+	return &URL{}, nil
+}
+
+func (g MysqlGateway) findLatest() (*URL, error) {
+	return &URL{}, nil
 }
 
 // FindLatest finds the latest URL in the data store.
@@ -48,5 +53,5 @@ func (g MysqlGateway) FindLatest() (*URL, error) {
 	g.RLock()
 	defer g.RUnlock()
 
-	return &URL{}
+	return g.findLatest()
 }
