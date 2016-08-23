@@ -8,6 +8,7 @@ import "sync"
 type Gateway interface {
 	FindByReference(string) (*URL, error)
 	FindLatest() (*URL, error)
+	Persist(URL) error
 }
 
 // -- Mock URL Gateway
@@ -19,14 +20,19 @@ type MockGateway struct {
 	mockError error
 }
 
-// FindByReference retrieves a pre-set mock URL instance.
+// FindByReference retrieves a pre-set mock URL instance, and mock error.
 func (g MockGateway) FindByReference(reference string) (*URL, error) {
 	return g.mockURL, g.mockError
 }
 
-// FindLatest retrieves a pre-set mock URL instance.
+// FindLatest retrieves a pre-set mock URL instance, and mock error.
 func (g MockGateway) FindLatest() (*URL, error) {
 	return g.mockURL, g.mockError
+}
+
+// Persist retrieves a pre-set mock error.
+func (g MockGateway) Persist(url URL) error {
+	return g.mockError
 }
 
 // -- MySQL URL Gateway
@@ -37,21 +43,25 @@ type MysqlGateway struct {
 }
 
 // FindByReference finds a URL by it's reference.
-func (g MysqlGateway) FindByReference(reference string) (*URL, error) {
+func (g *MysqlGateway) FindByReference(reference string) (*URL, error) {
 	g.RLock()
 	defer g.RUnlock()
 
-	return &URL{}, nil
-}
-
-func (g MysqlGateway) findLatest() (*URL, error) {
 	return &URL{}, nil
 }
 
 // FindLatest finds the latest URL in the data store.
-func (g MysqlGateway) FindLatest() (*URL, error) {
+func (g *MysqlGateway) FindLatest() (*URL, error) {
 	g.RLock()
 	defer g.RUnlock()
 
-	return g.findLatest()
+	return &URL{}, nil
+}
+
+// Persist takes a URL and saves it in the database.
+func (g *MysqlGateway) Persist(url URL) error {
+	g.Lock()
+	defer g.Unlock()
+
+	return nil
 }
