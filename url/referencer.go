@@ -8,8 +8,8 @@ type Referencer struct {
 	gateway Gateway
 }
 
-// Reference takes a URL, and returns a reference that can be used.
-func (r *Referencer) Reference(url string) string {
+// Reference takes a URL, and creates a reference that can be used to retrieve the underlying URL.
+func (r *Referencer) Reference(url string) URL {
 	r.Lock()
 	defer r.Unlock()
 
