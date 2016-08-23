@@ -18,5 +18,5 @@ func (r *Referencer) Reference(url string) URL {
 		// @todo: Handle
 	}
 
-	return ""
+	return URL{}
 }

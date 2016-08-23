@@ -1,0 +1,17 @@
+version: "2"
+
+services:
+  db:
+    command: "--skip-name-resolve"
+    container_name: "fettle-db"
+    environment:
+    - MYSQL_ROOT_PASSWORD=fettle
+    image: mysql:5.7
+    ports:
+    - 3306:3306
+    volumes:
+    - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:
+    driver: local
